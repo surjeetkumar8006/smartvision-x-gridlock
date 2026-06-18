@@ -32,6 +32,9 @@ import SystemHealth from './pages/SystemHealth';
 import SystemEngine from './pages/SystemEngine';
 import { Routes, Route, Navigate, useLocation, useNavigate, Link } from 'react-router-dom';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || `${API_BASE_URL}';
+
+
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -113,7 +116,7 @@ export default function App() {
   useEffect(() => {
     const fetchApiData = async () => {
       try {
-        const vioRes = await fetch('http://localhost:5000/api/violations');
+        const vioRes = await fetch(`${API_BASE_URL}/api/violations');
         if (vioRes.ok) {
           const data = await vioRes.json();
           setViolations(data);
@@ -125,13 +128,13 @@ export default function App() {
           });
         }
 
-        const patrolRes = await fetch('http://localhost:5000/api/patrols');
+        const patrolRes = await fetch(`${API_BASE_URL}/api/patrols');
         if (patrolRes.ok) {
           const data = await patrolRes.json();
           setPatrols(data);
         }
 
-        const statsRes = await fetch('http://localhost:5000/api/stats');
+        const statsRes = await fetch(`${API_BASE_URL}/api/stats');
         if (statsRes.ok) {
           const data = await statsRes.json();
           setStats(data);
@@ -272,7 +275,7 @@ export default function App() {
       setNewViolationBadge(newVio);
       
       // Save simulated violation to live database backend
-      fetch('http://localhost:5000/api/violations', {
+      fetch(`${API_BASE_URL}/api/violations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newVio)
@@ -429,7 +432,7 @@ export default function App() {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/review', {
+      const response = await fetch(`${API_BASE_URL}/api/review', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status, updatedPlate, feedbackMsg })
@@ -454,7 +457,7 @@ export default function App() {
     setPatrols(prev => prev.map(p => p.name === officerName ? { ...p, status: nextStatus } : p));
 
     try {
-      const response = await fetch('http://localhost:5000/api/dispatch', {
+      const response = await fetch(`${API_BASE_URL}/api/dispatch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ officerName, status: nextStatus })
@@ -524,7 +527,7 @@ export default function App() {
     setComplaintPlate('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/violations', {
+      const response = await fetch(`${API_BASE_URL}/api/violations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newViolation)
