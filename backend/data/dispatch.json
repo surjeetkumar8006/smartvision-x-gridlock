@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Officer Ramesh Gowda",
+    "vehicleId": "KA-03-G-110",
+    "status": "Available",
+    "distance": "0.8 km"
+  },
+  {
+    "name": "Officer Sunita Sen",
+    "vehicleId": "KA-01-G-954",
+    "status": "On Duty",
+    "distance": "2.1 km"
+  },
+  {
+    "name": "Officer Christopher D'Souza",
+    "vehicleId": "KA-51-G-228",
+    "status": "Available",
+    "distance": "1.4 km"
+  }
+]
