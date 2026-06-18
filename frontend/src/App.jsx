@@ -32,7 +32,7 @@ import SystemHealth from './pages/SystemHealth';
 import SystemEngine from './pages/SystemEngine';
 import { Routes, Route, Navigate, useLocation, useNavigate, Link } from 'react-router-dom';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || `${API_BASE_URL}';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 
 export default function App() {
