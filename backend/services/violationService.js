@@ -8,7 +8,15 @@ module.exports = {
     
     getAll: async () => {
         if (isUsingMongoDB) {
-            try { return await Violation.find().sort({ timestamp: -1 }); } 
+            try { 
+                let list = await Violation.find().sort({ timestamp: -1 }); 
+                if (list.length === 0) {
+                    const seedData = require('./seedData');
+                    await Violation.insertMany(seedData.violations);
+                    list = await Violation.find().sort({ timestamp: -1 });
+                }
+                return list;
+            } 
             catch (e) { console.error('MongoDB fallback:', e); }
         }
         return fallback.getViolations();

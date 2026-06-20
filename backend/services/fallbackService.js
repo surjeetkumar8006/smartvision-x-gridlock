@@ -25,14 +25,12 @@ function writeJSONData(filePath, data) {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 }
 
-let localViolations = [];
-let localPatrols = [];
+const seedData = require('./seedData');
 
-// Fallback logic requires initializing with default mock data if missing, we assume app will seed it or just use empty arrays
-// For simplicity, we just export getters and setters
+// Fallback logic requires initializing with default mock data if missing
 module.exports = {
-    getViolations: () => readJSONData(VIOLATIONS_FILE, []),
+    getViolations: () => readJSONData(VIOLATIONS_FILE, seedData.violations),
     saveViolations: (data) => writeJSONData(VIOLATIONS_FILE, data),
-    getPatrols: () => readJSONData(DISPATCH_FILE, []),
+    getPatrols: () => readJSONData(DISPATCH_FILE, seedData.patrols),
     savePatrols: (data) => writeJSONData(DISPATCH_FILE, data)
 };

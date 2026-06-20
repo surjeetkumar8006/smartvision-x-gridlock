@@ -12,6 +12,7 @@ const patrolService = require('./services/patrolService');
 const violationRoutes = require('./routes/violationRoutes');
 const patrolRoutes = require('./routes/patrolRoutes');
 const statsRoutes = require('./routes/statsRoutes');
+const cvRoutes = require('./routes/cvRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,6 +25,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/api/violations', violationRoutes);
 app.use('/api/patrols', patrolRoutes);
 app.use('/api', statsRoutes); // Contains /stats, /risk/:plate, /offenders
+app.use('/api/cv', cvRoutes);
 
 // Initialize App
 connectDB().then((isConnected) => {

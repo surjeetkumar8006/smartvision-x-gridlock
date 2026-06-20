@@ -3,18 +3,60 @@
     "name": "Officer Ramesh Gowda",
     "vehicleId": "KA-03-G-110",
     "status": "Available",
-    "distance": "0.8 km"
+    "distance": "0.8 km",
+    "casesHandled": 142,
+    "responseTime": "8 mins",
+    "cleared": 138,
+    "points": 2840,
+    "badge": "Elite",
+    "stars": 5
   },
   {
     "name": "Officer Sunita Sen",
     "vehicleId": "KA-01-G-954",
     "status": "On Duty",
-    "distance": "2.1 km"
+    "distance": "2.1 km",
+    "casesHandled": 156,
+    "responseTime": "11 mins",
+    "cleared": 151,
+    "points": 2410,
+    "badge": "Expert",
+    "stars": 4
   },
   {
     "name": "Officer Christopher D'Souza",
     "vehicleId": "KA-51-G-228",
     "status": "Available",
-    "distance": "1.4 km"
+    "distance": "1.4 km",
+    "casesHandled": 131,
+    "responseTime": "9 mins",
+    "cleared": 129,
+    "points": 1980,
+    "badge": "Senior",
+    "stars": 4
+  },
+  {
+    "name": "Officer Priya Nair",
+    "vehicleId": "KA-09-G-881",
+    "status": "Available",
+    "distance": "3.2 km",
+    "casesHandled": 98,
+    "responseTime": "14 mins",
+    "cleared": 92,
+    "points": 1540,
+    "badge": "Active",
+    "stars": 3
+  },
+  {
+    "name": "Officer Vikram Kulkarni",
+    "vehicleId": "KA-04-G-221",
+    "status": "On Duty",
+    "distance": "0.6 km",
+    "casesHandled": 74,
+    "responseTime": "10 mins",
+    "cleared": 70,
+    "points": 1120,
+    "badge": "Active",
+    "stars": 3
   }
 ]

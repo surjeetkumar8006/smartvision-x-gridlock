@@ -8,7 +8,15 @@ module.exports = {
     
     getAll: async () => {
         if (isUsingMongoDB) {
-            try { return await Patrol.find(); } 
+            try { 
+                let list = await Patrol.find(); 
+                if (list.length === 0) {
+                    const seedData = require('./seedData');
+                    await Patrol.insertMany(seedData.patrols);
+                    list = await Patrol.find();
+                }
+                return list;
+            } 
             catch (e) { console.error('MongoDB fallback:', e); }
         }
         return fallback.getPatrols();
