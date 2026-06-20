@@ -34,6 +34,30 @@ def add_full_bg(slide):
     bg.line.fill.background()
     return bg
 
+def add_para_run(tf, text, font_size, color, bold=False, font_name='Calibri', line_spacing=None, is_first=False):
+    """
+    Helper function to safely add colored text to a python-pptx TextFrame.
+    This creates an explicit text run object, which is guaranteed to render
+    with the correct color across all PowerPoint viewers.
+    """
+    if is_first:
+        p = tf.paragraphs[0]
+        # Clear default text if any
+        p.text = ""
+    else:
+        p = tf.add_paragraph()
+    
+    if line_spacing:
+        p.line_spacing = line_spacing
+        
+    run = p.add_run()
+    run.text = text
+    run.font.size = Pt(font_size)
+    run.font.bold = bold
+    run.font.color.rgb = color
+    run.font.name = font_name
+    return p
+
 def createBaseSlide(title_text, category_text="GRIDLOCK HACKATHON 2.0"):
     slide = prs.slides.add_slide(prs.slide_layouts[6]) # blank layout
     add_full_bg(slide)
@@ -42,23 +66,14 @@ def createBaseSlide(title_text, category_text="GRIDLOCK HACKATHON 2.0"):
     tx_hud = slide.shapes.add_textbox(Inches(0.8), Inches(0.4), Inches(10.0), Inches(0.3))
     tf = tx_hud.text_frame
     tf.word_wrap = True
-    p = tf.paragraphs[0]
-    p.text = f"SMARTVISION X  //  {category_text}"
-    p.font.size = Pt(10)
-    p.font.bold = True
-    p.font.color.rgb = c_cyan
-    p.font.name = 'Arial'
+    add_para_run(tf, f"SMARTVISION X  //  {category_text}", 10, c_cyan, bold=True, font_name='Arial', is_first=True)
     
     if title_text:
         # Title text
         tx_title = slide.shapes.add_textbox(Inches(0.8), Inches(0.7), Inches(11.0), Inches(0.6))
         tf_title = tx_title.text_frame
-        p_title = tf_title.paragraphs[0]
-        p_title.text = title_text
-        p_title.font.size = Pt(28)
-        p_title.font.bold = True
-        p_title.font.color.rgb = c_text
-        p_title.font.name = 'Arial'
+        tf_title.word_wrap = True
+        add_para_run(tf_title, title_text, 28, c_text, bold=True, font_name='Arial', is_first=True)
         
         # Horizontal line
         line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.45), Inches(11.73), Inches(0.02))
@@ -74,12 +89,9 @@ def createBaseSlide(title_text, category_text="GRIDLOCK HACKATHON 2.0"):
         
     # Watermark showing live URL
     tx_watermark = slide.shapes.add_textbox(Inches(0.8), Inches(7.0), Inches(11.73), Inches(0.3))
-    p_wm = tx_watermark.text_frame.paragraphs[0]
-    p_wm.text = "LIVE PLATFORM DEMO: smartvision-x-gridlock-c579.vercel.app"
-    p_wm.font.size = Pt(9)
-    p_wm.font.bold = True
-    p_wm.font.color.rgb = c_cyan
-    p_wm.font.name = 'Arial'
+    tf_wm = tx_watermark.text_frame
+    tf_wm.word_wrap = True
+    add_para_run(tf_wm, "LIVE PLATFORM DEMO: smartvision-x-gridlock-c579.vercel.app", 9, c_cyan, bold=True, font_name='Arial', is_first=True)
     
     return slide
 
@@ -115,59 +127,29 @@ el2.line.width = Pt(1)
 
 # Text blocks
 tx = slide1.shapes.add_textbox(Inches(0.5), Inches(1.7), Inches(12.33), Inches(0.4))
-p = tx.text_frame.paragraphs[0]
-p.text = "FLIPKART GRIDLOCK HACKATHON 2.0  //  THEME 3 SUBMISSION"
-p.alignment = PP_ALIGN.CENTER
-p.font.size = Pt(12)
-p.font.bold = True
-p.font.color.rgb = c_cyan
-p.font.name = 'Arial'
+tf = tx.text_frame
+tf.word_wrap = True
+add_para_run(tf, "FLIPKART GRIDLOCK HACKATHON 2.0  //  THEME 3 SUBMISSION", 12, c_cyan, bold=True, font_name='Arial', is_first=True).alignment = PP_ALIGN.CENTER
 
 tx2 = slide1.shapes.add_textbox(Inches(0.5), Inches(2.2), Inches(12.33), Inches(1.3))
-p2 = tx2.text_frame.paragraphs[0]
-p2.text = "SMARTVISION X"
-p2.alignment = PP_ALIGN.CENTER
-p2.font.size = Pt(68)
-p2.font.bold = True
-p2.font.color.rgb = c_text
-p2.font.name = 'Arial'
+tf2 = tx2.text_frame
+tf2.word_wrap = True
+add_para_run(tf2, "SMARTVISION X", 68, c_text, bold=True, font_name='Arial', is_first=True).alignment = PP_ALIGN.CENTER
 
 tx3 = slide1.shapes.add_textbox(Inches(0.5), Inches(3.6), Inches(12.33), Inches(0.5))
-p3 = tx3.text_frame.paragraphs[0]
-p3.text = "Autonomous AI-Powered Traffic Enforcement & Safety Platform"
-p3.alignment = PP_ALIGN.CENTER
-p3.font.size = Pt(20)
-p3.font.bold = True
-p3.font.color.rgb = c_blue
-p3.font.name = 'Arial'
+tf3 = tx3.text_frame
+tf3.word_wrap = True
+add_para_run(tf3, "Autonomous AI-Powered Traffic Enforcement & Safety Platform", 20, c_blue, bold=True, font_name='Arial', is_first=True).alignment = PP_ALIGN.CENTER
 
 add_card(slide1, 1.66, 4.8, 10.0, 1.8, c_border)
 tx_meta = slide1.shapes.add_textbox(Inches(2.0), Inches(4.9), Inches(9.33), Inches(1.6))
 tf_meta = tx_meta.text_frame
 tf_meta.word_wrap = True
 
-p_m1 = tf_meta.paragraphs[0]
-p_m1.text = "PROJECT OVERVIEW"
-p_m1.font.size = Pt(11)
-p_m1.font.bold = True
-p_m1.font.color.rgb = c_cyan
-
-p_m2 = tf_meta.add_paragraph()
-p_m2.text = "Presented by: Surjeet Yadav"
-p_m2.font.size = Pt(16)
-p_m2.font.bold = True
-p_m2.font.color.rgb = c_text
-
-p_m3 = tf_meta.add_paragraph()
-p_m3.text = "Live Demo: smartvision-x-gridlock-c579.vercel.app"
-p_m3.font.size = Pt(12)
-p_m3.font.bold = True
-p_m3.font.color.rgb = c_green
-
-p_m4 = tf_meta.add_paragraph()
-p_m4.text = "Architecture: React / Vite + Express MVC + YOLOv8 + MongoDB Atlas Sync"
-p_m4.font.size = Pt(12)
-p_m4.font.color.rgb = c_textMuted
+add_para_run(tf_meta, "PROJECT OVERVIEW", 11, c_cyan, bold=True, font_name='Arial', is_first=True)
+add_para_run(tf_meta, "Presented by: Surjeet Yadav", 16, c_text, bold=True, font_name='Arial')
+add_para_run(tf_meta, "Live Demo: smartvision-x-gridlock-c579.vercel.app", 12, c_green, bold=True)
+add_para_run(tf_meta, "Architecture: React / Vite + Express MVC + YOLOv8 + MongoDB Atlas Sync", 12, c_textMuted)
 
 # -----------------------------------------------------------------------------
 # SLIDE 2: Vision & Mission
@@ -176,37 +158,25 @@ slide2 = createBaseSlide("Our Vision & Mission", "EXECUTIVE SUMMARY")
 
 add_card(slide2, 0.8, 2.2, 5.5, 4.2, c_cyan)
 add_card(slide2, 0.8, 2.2, 5.5, 0.6, None, c_cardHeader)
+
 tx_vis = slide2.shapes.add_textbox(Inches(1.1), Inches(2.25), Inches(4.9), Inches(3.9))
 tf_vis = tx_vis.text_frame
 tf_vis.word_wrap = True
-p_vh = tf_vis.paragraphs[0]
-p_vh.text = "THE VISION"
-p_vh.font.size = Pt(16)
-p_vh.font.bold = True
-p_vh.font.color.rgb = c_cyan
-
-p_vb = tf_vis.add_paragraph()
-p_vb.text = "\nTo construct a fully autonomous urban mobility nervous system that eliminates human delays in traffic enforcement, instantly detects life-threatening safety violations, and secures Indian roads using real-time Edge Artificial Intelligence."
-p_vb.font.size = Pt(15)
-p_vb.font.color.rgb = c_text
-p_vb.font.name = 'Calibri'
+add_para_run(tf_vis, "THE VISION", 16, c_cyan, bold=True, font_name='Arial', is_first=True)
+add_para_run(tf_vis, "To construct a fully autonomous urban mobility nervous system that eliminates human delays in traffic enforcement, instantly detects life-threatening safety violations, and secures Indian roads using real-time Edge Artificial Intelligence.", 15, c_text, line_spacing=1.3)
 
 add_card(slide2, 7.0, 2.2, 5.5, 4.2, c_blue)
 add_card(slide2, 7.0, 2.2, 5.5, 0.6, None, c_cardHeader)
+
 tx_mis = slide2.shapes.add_textbox(Inches(7.3), Inches(2.25), Inches(4.9), Inches(3.9))
 tf_mis = tx_mis.text_frame
 tf_mis.word_wrap = True
-p_mh = tf_mis.paragraphs[0]
-p_mh.text = "THE MISSION"
-p_mh.font.size = Pt(16)
-p_mh.font.bold = True
-p_mh.font.color.rgb = c_blue
-
-p_mb = tf_mis.add_paragraph()
-p_mb.text = "\nDeploy an end-to-end MERN stack + Python CV application that processes live CCTV streams to:\n\n• Detect Helmetless Riders & Triple Riding\n• Identify Sidewalk/Illegal Parking Blockages\n• Auto-generate legal evidence & PDF Challans\n• Dispatch patrol officers based on GPS proximity."
-p_mb.font.size = Pt(14)
-p_mb.font.color.rgb = c_text
-p_mb.font.name = 'Calibri'
+add_para_run(tf_mis, "THE MISSION", 16, c_blue, bold=True, font_name='Arial', is_first=True)
+add_para_run(tf_mis, "Deploy an end-to-end MERN stack + Python CV application that processes live CCTV streams to:", 14, c_text, line_spacing=1.2)
+add_para_run(tf_mis, "• Detect Helmetless Riders & Triple Riding", 13.5, c_textMuted)
+add_para_run(tf_mis, "• Identify Sidewalk/Illegal Parking Blockages", 13.5, c_textMuted)
+add_para_run(tf_mis, "• Auto-generate legal evidence & PDF Challans", 13.5, c_textMuted)
+add_para_run(tf_mis, "• Dispatch patrol officers based on GPS proximity.", 13.5, c_textMuted)
 
 # -----------------------------------------------------------------------------
 # SLIDE 3: The Urban Traffic Crisis
@@ -231,28 +201,10 @@ for idx, item in enumerate(crisisData):
     tf_c = tx_c.text_frame
     tf_c.word_wrap = True
     
-    p_tag = tf_c.paragraphs[0]
-    p_tag.text = f"METRIC 0{idx+1}"
-    p_tag.font.size = Pt(9)
-    p_tag.font.bold = True
-    p_tag.font.color.rgb = c_textMuted
-    
-    p_stat = tf_c.add_paragraph()
-    p_stat.text = item['stat']
-    p_stat.font.size = Pt(24)
-    p_stat.font.bold = True
-    p_stat.font.color.rgb = item['color']
-    
-    p_t = tf_c.add_paragraph()
-    p_t.text = "\n" + item['title']
-    p_t.font.size = Pt(15)
-    p_t.font.bold = True
-    p_t.font.color.rgb = c_text
-    
-    p_d = tf_c.add_paragraph()
-    p_d.text = "\n" + item['desc']
-    p_d.font.size = Pt(12.5)
-    p_d.font.color.rgb = c_textMuted
+    add_para_run(tf_c, f"METRIC 0{idx+1}", 9, c_textMuted, bold=True, is_first=True)
+    add_para_run(tf_c, item['stat'], 24, item['color'], bold=True)
+    add_para_run(tf_c, item['title'], 15, c_text, bold=True)
+    add_para_run(tf_c, item['desc'], 12.5, c_textMuted, line_spacing=1.2)
 
 # -----------------------------------------------------------------------------
 # SLIDE 4: Limitations of Manual Enforcement
@@ -260,9 +212,9 @@ for idx, item in enumerate(crisisData):
 slide4 = createBaseSlide("Limitations of Manual Enforcement", "PROBLEM STATEMENT")
 
 tx_intro = slide4.shapes.add_textbox(Inches(0.8), Inches(1.9), Inches(11.0), Inches(0.4))
-tx_intro.text_frame.paragraphs[0].text = "Traditional traffic policing methods cannot scale with mega-city volumes due to:"
-tx_intro.text_frame.paragraphs[0].font.size = Pt(16)
-tx_intro.text_frame.paragraphs[0].font.color.rgb = c_text
+tf_intro = tx_intro.text_frame
+tf_intro.word_wrap = True
+add_para_run(tf_intro, "Traditional traffic policing methods cannot scale with mega-city volumes due to:", 16, c_text, is_first=True)
 
 limits = [
     { 'label': 'HUMAN VISUAL FATIGUE', 'desc': 'Impossible for control room officers to monitor hundreds of CCTV streams concurrently 24×7 without missing violations.' },
@@ -280,21 +232,27 @@ for idx, limit in enumerate(limits):
     
     add_card(slide4, 0.95, y, 11.58, 0.9, c_border)
     
-    tx_lim = slide4.shapes.add_textbox(Inches(1.15), Inches(y + 0.1), Inches(11.0), Inches(0.7))
+    tx_lim = slide4.shapes.add_textbox(Inches(1.15), Inches(y + 0.1), Inches(11.2), Inches(0.7))
     tf_lim = tx_lim.text_frame
     tf_lim.word_wrap = True
-    p_lh = tf_lim.paragraphs[0]
-    p_lh.text = limit['label'] + "   |   "
-    p_lh.font.size = Pt(13)
-    p_lh.font.bold = True
-    p_lh.font.color.rgb = c_red
     
-    # We append the description on the same line or as run
-    run = p_lh.add_run()
-    run.text = limit['desc']
-    run.font.size = Pt(13)
-    run.font.bold = False
-    run.font.color.rgb = c_text
+    # We add a paragraph with two runs to keep bold label and normal description together beautifully
+    p_lh = tf_lim.paragraphs[0]
+    p_lh.text = "" # Clear default
+    
+    r_label = p_lh.add_run()
+    r_label.text = limit['label'] + "   |   "
+    r_label.font.size = Pt(13)
+    r_label.font.bold = True
+    r_label.font.color.rgb = c_red
+    r_label.font.name = 'Arial'
+    
+    r_desc = p_lh.add_run()
+    r_desc.text = limit['desc']
+    r_desc.font.size = Pt(13)
+    r_desc.font.bold = False
+    r_desc.font.color.rgb = c_text
+    r_desc.font.name = 'Calibri'
 
 # -----------------------------------------------------------------------------
 # SLIDE 5: Introducing SmartVision X
@@ -306,18 +264,9 @@ add_card(slide5, 0.8, 2.0, 11.73, 1.3, c_cyan, RGBColor(0x0D, 0x17, 0x2A))
 tx_sh = slide5.shapes.add_textbox(Inches(1.0), Inches(2.1), Inches(11.33), Inches(1.1))
 tf_sh = tx_sh.text_frame
 tf_sh.word_wrap = True
-p_sh = tf_sh.paragraphs[0]
-p_sh.text = "The Ultimate AI-Powered Traffic Nervous System"
-p_sh.alignment = PP_ALIGN.CENTER
-p_sh.font.size = Pt(24)
-p_sh.font.bold = True
-p_sh.font.color.rgb = c_cyan
 
-p_sb = tf_sh.add_paragraph()
-p_sb.text = "An end-to-end platform that captures street streams, detects violations using custom-quantised YOLOv8 models, reads license plates with OCR, and dispatches responders via a real-time web portal."
-p_sb.alignment = PP_ALIGN.CENTER
-p_sb.font.size = Pt(14)
-p_sb.font.color.rgb = c_text
+add_para_run(tf_sh, "The Ultimate AI-Powered Traffic Nervous System", 24, c_cyan, bold=True, font_name='Arial', is_first=True).alignment = PP_ALIGN.CENTER
+add_para_run(tf_sh, "An end-to-end platform that captures street streams, detects violations using custom-quantised YOLOv8 models, reads license plates with OCR, and dispatches responders via a real-time web portal.", 14, c_text, is_first=False).alignment = PP_ALIGN.CENTER
 
 # 4 Horizontal cards
 steps = [
@@ -335,29 +284,16 @@ for idx, step in enumerate(steps):
     tf_step = tx_step.text_frame
     tf_step.word_wrap = True
     
-    p_num = tf_step.paragraphs[0]
-    p_num.text = step['num']
-    p_num.font.size = Pt(18)
-    p_num.font.bold = True
-    p_num.font.color.rgb = c_cyan
-    
-    p_st = tf_step.add_paragraph()
-    p_st.text = step['title']
-    p_st.font.size = Pt(12)
-    p_st.font.bold = True
-    p_st.font.color.rgb = c_text
-    
-    p_sd = tf_step.add_paragraph()
-    p_sd.text = "\n" + step['desc']
-    p_sd.font.size = Pt(11)
-    p_sd.font.color.rgb = c_textMuted
+    add_para_run(tf_step, step['num'], 18, c_cyan, bold=True, is_first=True)
+    add_para_run(tf_step, step['title'], 12, c_text, bold=True)
+    add_para_run(tf_step, step['desc'], 11, c_textMuted, line_spacing=1.1)
     
     # Arrow
     if idx < 3:
         tx_arr = slide5.shapes.add_textbox(Inches(x + 2.75), Inches(4.7), Inches(0.3), Inches(0.5))
-        tx_arr.text_frame.paragraphs[0].text = "➔"
-        tx_arr.text_frame.paragraphs[0].font.size = Pt(18)
-        tx_arr.text_frame.paragraphs[0].font.color.rgb = c_blue
+        tf_arr = tx_arr.text_frame
+        tf_arr.word_wrap = True
+        add_para_run(tf_arr, "➔", 18, c_blue, bold=True, is_first=True)
 
 # -----------------------------------------------------------------------------
 # SLIDE 6: Key Modules Overview
@@ -389,17 +325,8 @@ for idx, feat in enumerate(features):
     tf_f = tx_f.text_frame
     tf_f.word_wrap = True
     
-    p_ft = tf_f.paragraphs[0]
-    p_ft.text = feat['t']
-    p_ft.font.size = Pt(12)
-    p_ft.font.bold = True
-    p_ft.font.color.rgb = c_cyan
-    
-    p_fd = tf_f.add_paragraph()
-    p_fd.text = "\n" + feat['d']
-    p_fd.font.size = Pt(11)
-    p_fd.font.color.rgb = c_text
-    p_fd.line_spacing = 1.1
+    add_para_run(tf_f, feat['t'], 12, c_cyan, bold=True, font_name='Arial', is_first=True)
+    add_para_run(tf_f, feat['d'], 11, c_text, line_spacing=1.15)
 
 # -----------------------------------------------------------------------------
 # SLIDE 7: AI Vision Pipeline
@@ -407,9 +334,9 @@ for idx, feat in enumerate(features):
 slide7 = createBaseSlide("AI Vision Pipeline", "TECHNOLOGY DEEP DIVE")
 
 tx_pi = slide7.shapes.add_textbox(Inches(0.8), Inches(1.8), Inches(11.0), Inches(0.4))
-tx_pi.text_frame.paragraphs[0].text = "How raw CCTV camera feeds are processed into legally binding traffic citations in milliseconds:"
-tx_pi.text_frame.paragraphs[0].font.size = Pt(14)
-tx_pi.text_frame.paragraphs[0].font.color.rgb = c_textMuted
+tf_pi = tx_pi.text_frame
+tf_pi.word_wrap = True
+add_para_run(tf_pi, "How raw CCTV camera feeds are processed into legally binding traffic citations in milliseconds:", 14, c_textMuted, is_first=True)
 
 pipelineNodes = [
     { 'step': 'CCTV CAPTURE', 'model': 'RTSP Stream', 'info': '1080p stream at 30 FPS. Weather filters simulation (Rain/Night) adjust exposure.', 'color': c_blue },
@@ -432,38 +359,16 @@ for idx, node in enumerate(pipelineNodes):
     tf_node = tx_node.text_frame
     tf_node.word_wrap = True
     
-    p_step = tf_node.paragraphs[0]
-    p_step.text = node['step']
-    p_step.alignment = PP_ALIGN.CENTER
-    p_step.font.size = Pt(10)
-    p_step.font.bold = True
-    p_step.font.color.rgb = RGBColor(0, 0, 0)
-    
-    p_mod = tf_node.add_paragraph()
-    p_mod.text = "\n" + node['model']
-    p_mod.alignment = PP_ALIGN.CENTER
-    p_mod.font.size = Pt(11)
-    p_mod.font.bold = True
-    p_mod.font.color.rgb = c_text
-    
-    # Spacer line
-    p_space = tf_node.add_paragraph()
-    p_space.text = "---------------------"
-    p_space.alignment = PP_ALIGN.CENTER
-    p_space.font.size = Pt(8)
-    p_space.font.color.rgb = c_border
-    
-    p_inf = tf_node.add_paragraph()
-    p_inf.text = node['info']
-    p_inf.font.size = Pt(10)
-    p_inf.font.color.rgb = c_textMuted
-    p_inf.line_spacing = 1.1
+    add_para_run(tf_node, node['step'], 10, RGBColor(0, 0, 0), bold=True, is_first=True).alignment = PP_ALIGN.CENTER
+    add_para_run(tf_node, node['model'], 11, c_text, bold=True).alignment = PP_ALIGN.CENTER
+    add_para_run(tf_node, "---------------------", 8, c_border).alignment = PP_ALIGN.CENTER
+    add_para_run(tf_node, node['info'], 10.5, c_textMuted, line_spacing=1.1)
 
     if idx < 4:
         tx_arr = slide7.shapes.add_textbox(Inches(x + 2.2), Inches(4.1), Inches(0.2), Inches(0.4))
-        tx_arr.text_frame.paragraphs[0].text = "➔"
-        tx_arr.text_frame.paragraphs[0].font.size = Pt(16)
-        tx_arr.text_frame.paragraphs[0].font.color.rgb = c_cyan
+        tf_arr = tx_arr.text_frame
+        tf_arr.word_wrap = True
+        add_para_run(tf_arr, "➔", 16, c_cyan, bold=True, is_first=True)
 
 # -----------------------------------------------------------------------------
 # SLIDE 8: AI Vision Demo
@@ -476,17 +381,12 @@ add_card(slide8, 0.8, 2.1, 4.5, 0.5, None, c_cardHeader)
 tx_e8 = slide8.shapes.add_textbox(Inches(0.95), Inches(2.15), Inches(4.2), Inches(4.2))
 tf_e8 = tx_e8.text_frame
 tf_e8.word_wrap = True
-p_e8h = tf_e8.paragraphs[0]
-p_e8h.text = "YOLOv8 + OCR PIPELINE IN ACTION"
-p_e8h.font.size = Pt(12)
-p_e8h.font.bold = True
-p_e8h.font.color.rgb = c_cyan
 
-p_e8b = tf_e8.add_paragraph()
-p_e8b.text = "\n• Vehicle Bounding Box: YOLOv8 locates the motorcycle and crops the regional coordinates.\n\n• Helmet Status Classifier: Specifically isolates the rider head box to run binary prediction (Helmet/No Helmet).\n\n• Automatic Plate Localization: Identifies HSRP plate location and applies OCR perspective warping.\n\n• Real-time Confidence Rating: The AI engine returns a 94.6% prediction confidence."
-p_e8b.font.size = Pt(11.5)
-p_e8b.font.color.rgb = c_text
-p_e8b.line_spacing = 1.1
+add_para_run(tf_e8, "YOLOv8 + OCR PIPELINE IN ACTION", 12, c_cyan, bold=True, font_name='Arial', is_first=True)
+add_para_run(tf_e8, "• Vehicle Bounding Box: YOLOv8 locates the motorcycle and crops the regional coordinates.", 11.5, c_text, line_spacing=1.2)
+add_para_run(tf_e8, "• Helmet Status Classifier: Specifically isolates the rider head box to run binary prediction (Helmet/No Helmet).", 11.5, c_text, line_spacing=1.2)
+add_para_run(tf_e8, "• Automatic Plate Localization: Identifies HSRP plate location and applies OCR perspective warping.", 11.5, c_text, line_spacing=1.2)
+add_para_run(tf_e8, "• Real-time Confidence Rating: The AI engine returns a 94.6% prediction confidence.", 11.5, c_text, line_spacing=1.2)
 
 # Image Frame right side
 img_frame1 = slide8.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(5.7), Inches(2.1), Inches(6.83), Inches(4.4))
@@ -500,9 +400,9 @@ if os.path.exists(img_p1):
     slide8.shapes.add_picture(img_p1, Inches(5.8), Inches(2.2), width=Inches(6.63), height=Inches(4.2))
 else:
     tx_err = slide8.shapes.add_textbox(Inches(6.2), Inches(3.8), Inches(5.8), Inches(1.0))
-    tx_err.text_frame.paragraphs[0].text = "[Image: helmet_violation.png not found]"
-    tx_err.text_frame.paragraphs[0].font.size = Pt(14)
-    tx_err.text_frame.paragraphs[0].font.color.rgb = c_red
+    tf_err = tx_err.text_frame
+    tf_err.word_wrap = True
+    add_para_run(tf_err, "[Image: helmet_violation.png not found]", 14, c_red, is_first=True)
 
 # -----------------------------------------------------------------------------
 # SLIDE 9: Dashboard Demo
@@ -520,9 +420,9 @@ if os.path.exists(img_p2):
     slide9.shapes.add_picture(img_p2, Inches(0.9), Inches(2.2), width=Inches(7.0), height=Inches(4.2))
 else:
     tx_err = slide9.shapes.add_textbox(Inches(1.2), Inches(3.8), Inches(6.2), Inches(1.0))
-    tx_err.text_frame.paragraphs[0].text = "[Image: smartvision_dashboard.png not found]"
-    tx_err.text_frame.paragraphs[0].font.size = Pt(14)
-    tx_err.text_frame.paragraphs[0].font.color.rgb = c_red
+    tf_err = tx_err.text_frame
+    tf_err.word_wrap = True
+    add_para_run(tf_err, "[Image: smartvision_dashboard.png not found]", 14, c_red, is_first=True)
 
 add_card(slide9, 8.4, 2.1, 4.13, 4.4, c_border)
 add_card(slide9, 8.4, 2.1, 4.13, 0.5, None, c_cardHeader)
@@ -530,17 +430,12 @@ add_card(slide9, 8.4, 2.1, 4.13, 0.5, None, c_cardHeader)
 tx_e9 = slide9.shapes.add_textbox(Inches(8.55), Inches(2.15), Inches(3.8), Inches(3.0))
 tf_e9 = tx_e9.text_frame
 tf_e9.word_wrap = True
-p_e9h = tf_e9.paragraphs[0]
-p_e9h.text = "INTEGRATED CONTROL ROOM"
-p_e9h.font.size = Pt(12)
-p_e9h.font.bold = True
-p_e9h.font.color.rgb = c_cyan
 
-p_e9b = tf_e9.add_paragraph()
-p_e9b.text = "\n• Live CCTV Grid: Stream switcher simulating camera junctions across Silk Board and Majestic.\n\n• AI Brain Panel: Audio/visual alerts switch with live CPU/GPU tracking.\n\n• Violations Center: Instant table rendering with OCR read outs.\n\n• Weather Toggles: Simulates clear, rain, or night exposure conditions."
-p_e9b.font.size = Pt(10.5)
-p_e9b.font.color.rgb = c_text
-p_e9b.line_spacing = 1.1
+add_para_run(tf_e9, "INTEGRATED CONTROL ROOM", 12, c_cyan, bold=True, font_name='Arial', is_first=True)
+add_para_run(tf_e9, "• Live CCTV Grid: Stream switcher simulating camera junctions across Silk Board and Majestic.", 10.5, c_text, line_spacing=1.1)
+add_para_run(tf_e9, "• AI Brain Panel: Audio/visual alerts switch with live CPU/GPU tracking.", 10.5, c_text, line_spacing=1.1)
+add_para_run(tf_e9, "• Violations Center: Instant table rendering with OCR read outs.", 10.5, c_text, line_spacing=1.1)
+add_para_run(tf_e9, "• Weather Toggles: Simulates clear, rain, or night exposure conditions.", 10.5, c_text, line_spacing=1.1)
 
 # Live link button
 btn = slide9.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(8.7), Inches(5.3), Inches(3.5), Inches(0.9))
@@ -552,20 +447,9 @@ btn.line.width = Pt(2)
 tx_btn = slide9.shapes.add_textbox(Inches(8.7), Inches(5.35), Inches(3.5), Inches(0.8))
 tf_btn = tx_btn.text_frame
 tf_btn.word_wrap = True
-p_btn1 = tf_btn.paragraphs[0]
-p_btn1.text = "LIVE PLATFORM URL"
-p_btn1.alignment = PP_ALIGN.CENTER
-p_btn1.font.size = Pt(10)
-p_btn1.font.bold = True
-p_btn1.font.color.rgb = c_green
 
-p_btn2 = tf_btn.add_paragraph()
-p_btn2.text = "smartvision-x-gridlock-c579.vercel.app/command"
-p_btn2.alignment = PP_ALIGN.CENTER
-p_btn2.font.size = Pt(9.5)
-p_btn2.font.bold = True
-p_btn2.font.color.rgb = c_text
-p_btn2.font.name = 'Courier New'
+add_para_run(tf_btn, "LIVE PLATFORM URL", 10, c_green, bold=True, is_first=True).alignment = PP_ALIGN.CENTER
+add_para_run(tf_btn, "smartvision-x-gridlock-c579.vercel.app/command", 9.5, c_text, bold=True, font_name='Courier New').alignment = PP_ALIGN.CENTER
 
 # -----------------------------------------------------------------------------
 # SLIDE 10: Automated Evidence & E-Challan Generation
@@ -578,17 +462,12 @@ add_card(slide10, 0.8, 2.1, 5.5, 0.5, None, c_cardHeader)
 tx_e10 = slide10.shapes.add_textbox(Inches(0.95), Inches(2.15), Inches(5.2), Inches(4.2))
 tf_e10 = tx_e10.text_frame
 tf_e10.word_wrap = True
-p_e10h = tf_e10.paragraphs[0]
-p_e10h.text = "E-CHALLAN GENERATION ENGINE"
-p_e10h.font.size = Pt(13)
-p_e10h.font.bold = True
-p_e10h.font.color.rgb = c_cyan
 
-p_e10b = tf_e10.add_paragraph()
-p_e10b.text = "\n• Operator Verification: The platform keeps a human in the loop. The control officer reviews the auto-cropped plate frame before confirming.\n\n• Automated Fine Calculation: System auto-assigns fine amounts (₹1,000 for helmet violations, ₹2,000 for triple riding).\n\n• RTO Vahan Sync: Connects license plates to registered owner mobile data for automated SMS alert simulations.\n\n• High-fidelity PDF Receipt: Exports clean legal tickets complete with plate crops, maps, and barcode elements."
-p_e10b.font.size = Pt(11)
-p_e10b.font.color.rgb = c_text
-p_e10b.line_spacing = 1.1
+add_para_run(tf_e10, "E-CHALLAN GENERATION ENGINE", 13, c_cyan, bold=True, font_name='Arial', is_first=True)
+add_para_run(tf_e10, "• Operator Verification: The platform keeps a human in the loop. The control officer reviews the auto-cropped plate frame before confirming.", 11, c_text, line_spacing=1.15)
+add_para_run(tf_e10, "• Automated Fine Calculation: System auto-assigns fine amounts (₹1,000 for helmet violations, ₹2,000 for triple riding).", 11, c_text, line_spacing=1.15)
+add_para_run(tf_e10, "• RTO Vahan Sync: Connects license plates to registered owner mobile data for automated SMS alert simulations.", 11, c_text, line_spacing=1.15)
+add_para_run(tf_e10, "• High-fidelity PDF Receipt: Exports clean legal tickets complete with plate crops, maps, and barcode elements.", 11, c_text, line_spacing=1.15)
 
 # Mock Ticket Card
 tx_x = 7.3
@@ -600,18 +479,10 @@ ticket.line.width = Pt(1.5)
 
 tx_th = slide10.shapes.add_textbox(Inches(tx_x + 0.2), Inches(2.2), Inches(4.8), Inches(0.7))
 tf_th = tx_th.text_frame
-p_th1 = tf_th.paragraphs[0]
-p_th1.text = "BENGALURU TRAFFIC POLICE"
-p_th1.alignment = PP_ALIGN.CENTER
-p_th1.font.size = Pt(13)
-p_th1.font.bold = True
-p_th1.font.color.rgb = RGBColor(0x0A, 0x19, 0x2F)
+tf_th.word_wrap = True
 
-p_th2 = tf_th.add_paragraph()
-p_th2.text = "OFFICIAL E-CHALLAN RECEIPT"
-p_th2.alignment = PP_ALIGN.CENTER
-p_th2.font.size = Pt(9)
-p_th2.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
+add_para_run(tf_th, "BENGALURU TRAFFIC POLICE", 13, RGBColor(0x0A, 0x19, 0x2F), bold=True, is_first=True).alignment = PP_ALIGN.CENTER
+add_para_run(tf_th, "OFFICIAL E-CHALLAN RECEIPT", 9, RGBColor(0x66, 0x66, 0x66), is_first=False).alignment = PP_ALIGN.CENTER
 
 t_line = slide10.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(tx_x + 0.3), Inches(2.85), Inches(4.6), Inches(0.01))
 t_line.fill.solid()
@@ -630,18 +501,15 @@ ticketDetails = [
 for idx, row in enumerate(ticketDetails):
     y = 3.0 + (idx * 0.35)
     tx_row1 = slide10.shapes.add_textbox(Inches(tx_x + 0.3), Inches(y), Inches(1.8), Inches(0.3))
-    p_r1 = tx_row1.text_frame.paragraphs[0]
-    p_r1.text = row[0]
-    p_r1.font.size = Pt(10.5)
-    p_r1.font.bold = True
-    p_r1.font.color.rgb = RGBColor(0x44, 0x44, 0x44)
+    tf_row1 = tx_row1.text_frame
+    tf_row1.word_wrap = True
+    add_para_run(tf_row1, row[0], 10.5, RGBColor(0x44, 0x44, 0x44), bold=True, is_first=True)
     
     tx_row2 = slide10.shapes.add_textbox(Inches(tx_x + 2.1), Inches(y), Inches(2.8), Inches(0.3))
-    p_r2 = tx_row2.text_frame.paragraphs[0]
-    p_r2.text = row[1]
-    p_r2.font.size = Pt(10.5)
-    p_r2.font.color.rgb = RGBColor(0xFF, 0, 0) if row[1].startswith('₹') else RGBColor(0x11, 0x11, 0x11)
-    p_r2.font.bold = True if row[1].startswith('₹') else False
+    tf_row2 = tx_row2.text_frame
+    tf_row2.word_wrap = True
+    color_val = RGBColor(0xFF, 0, 0) if row[1].startswith('₹') else RGBColor(0x11, 0x11, 0x11)
+    add_para_run(tf_row2, row[1], 10.5, color_val, bold=(True if row[1].startswith('₹') else False), is_first=True)
 
 # Green Verified Stamp
 stamp = slide10.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(tx_x + 3.2), Inches(5.2), Inches(1.6), Inches(0.5))
@@ -650,12 +518,10 @@ stamp.fill.fore_color.rgb = RGBColor(0xE6, 0xFB, 0xF3)
 stamp.line.color.rgb = RGBColor(0x05, 0xD7, 0x82)
 stamp.line.width = Pt(2)
 
-tx_st = slide10.shapes.add_textbox(Inches(tx_x + 3.2), Inches(5.25), Inches(1.6), Inches(0.4))
-tx_st.text_frame.paragraphs[0].text = "VERIFIED & PAID"
-tx_st.text_frame.paragraphs[0].alignment = PP_ALIGN.CENTER
-tx_st.text_frame.paragraphs[0].font.size = Pt(9.5)
-tx_st.text_frame.paragraphs[0].font.bold = True
-tx_st.text_frame.paragraphs[0].font.color.rgb = RGBColor(0x05, 0xB3, 0x6C)
+tx_st = slide10.shapes.add_textbox(Inches(tx_x + 3.2), Inches(5.2), Inches(1.6), Inches(0.5))
+tf_st = tx_st.text_frame
+tf_st.word_wrap = True
+add_para_run(tf_st, "VERIFIED & PAID", 9.5, RGBColor(0x05, 0xB3, 0x6C), bold=True, is_first=True).alignment = PP_ALIGN.CENTER
 
 # Barcode
 bar_widths = [0.03, 0.08, 0.04, 0.02, 0.09, 0.03, 0.05, 0.02, 0.08, 0.04, 0.02, 0.09, 0.03, 0.05, 0.02, 0.08]
@@ -678,17 +544,12 @@ add_card(slide11, 0.8, 2.1, 5.5, 0.5, None, c_cardHeader)
 tx_e11 = slide11.shapes.add_textbox(Inches(0.95), Inches(2.15), Inches(5.2), Inches(4.2))
 tf_e11 = tx_e11.text_frame
 tf_e11.word_wrap = True
-p_e11h = tf_e11.paragraphs[0]
-p_e11h.text = "ENTERPRISE DATA PERSISTENCE"
-p_e11h.font.size = Pt(13)
-p_e11h.font.bold = True
-p_e11h.font.color.rgb = c_green
 
-p_e11b = tf_e11.add_paragraph()
-p_e11b.text = "\n• Hybrid Mode: Connects to live MongoDB Atlas Cloud cluster. Automatically falls back to local JSON persistence if internet drops.\n\n• Real-time Schema Validation: Mongoose models enforce validation rules, timestamp audits, and geospatial coordinates.\n\n• Query Optimization: Indexes on vehicle license plates and violation timestamps allow instant search queries.\n\n• Global Accessibility: Command Center dashboard queries sync instantly, giving city inspectors access to active logs."
-p_e11b.font.size = Pt(11)
-p_e11b.font.color.rgb = c_text
-p_e11b.line_spacing = 1.1
+add_para_run(tf_e11, "ENTERPRISE DATA PERSISTENCE", 13, c_green, bold=True, font_name='Arial', is_first=True)
+add_para_run(tf_e11, "• Hybrid Mode: Connects to live MongoDB Atlas Cloud cluster. Automatically falls back to local JSON persistence if internet drops.", 11, c_text, line_spacing=1.15)
+add_para_run(tf_e11, "• Real-time Schema Validation: Mongoose models enforce validation rules, timestamp audits, and geospatial coordinates.", 11, c_text, line_spacing=1.15)
+add_para_run(tf_e11, "• Query Optimization: Indexes on vehicle license plates and violation timestamps allow instant search queries.", 11, c_text, line_spacing=1.15)
+add_para_run(tf_e11, "• Global Accessibility: Command Center dashboard queries sync instantly, giving city inspectors access to active logs.", 11, c_text, line_spacing=1.15)
 
 # Mock Code Block
 codeX = 7.3
@@ -699,11 +560,9 @@ header_code.fill.fore_color.rgb = RGBColor(0x0B, 0x15, 0x28)
 header_code.line.fill.background()
 
 tx_ch = slide11.shapes.add_textbox(Inches(codeX + 0.2), Inches(2.15), Inches(4.8), Inches(0.3))
-tx_ch.text_frame.paragraphs[0].text = "mongoose.model(\"Violation\")"
-tx_ch.text_frame.paragraphs[0].font.size = Pt(10)
-tx_ch.text_frame.paragraphs[0].font.bold = True
-tx_ch.text_frame.paragraphs[0].font.color.rgb = c_textMuted
-tx_ch.text_frame.paragraphs[0].font.name = 'Courier New'
+tf_ch = tx_ch.text_frame
+tf_ch.word_wrap = True
+add_para_run(tf_ch, "mongoose.model(\"Violation\")", 10, c_textMuted, bold=True, font_name='Courier New', is_first=True)
 
 jsonLines = [
     '{',
@@ -730,10 +589,9 @@ for idx, line in enumerate(jsonLines):
         color = c_cyan
         
     tx_line = slide11.shapes.add_textbox(Inches(codeX + 0.3), Inches(y), Inches(4.8), Inches(0.3))
-    tx_line.text_frame.paragraphs[0].text = line
-    tx_line.text_frame.paragraphs[0].font.size = Pt(9.5)
-    tx_line.text_frame.paragraphs[0].font.color.rgb = color
-    tx_line.text_frame.paragraphs[0].font.name = 'Courier New'
+    tf_line = tx_line.text_frame
+    tf_line.word_wrap = True
+    add_para_run(tf_line, line, 9.5, color, font_name='Courier New', is_first=True)
 
 # -----------------------------------------------------------------------------
 # SLIDE 12: Smart Dispatch
@@ -746,17 +604,12 @@ add_card(slide12, 0.8, 2.1, 5.5, 0.5, None, c_cardHeader)
 tx_e12 = slide12.shapes.add_textbox(Inches(0.95), Inches(2.15), Inches(5.2), Inches(4.2))
 tf_e12 = tx_e12.text_frame
 tf_e12.word_wrap = True
-p_e12h = tf_e12.paragraphs[0]
-p_e12h.text = "HAVERSINE NEAREST OFFICER ROUTING"
-p_e12h.font.size = Pt(13)
-p_e12h.font.bold = True
-p_e12h.font.color.rgb = c_purple
 
-p_e12b = tf_e12.add_paragraph()
-p_e12b.text = "\n• Real-time GPS Tracking: Field officers update their live coordinate pairs back to the dashboard.\n\n• Haversine Metric: When an operator verifies a critical block or triple-riding event, the backend runs the Haversine formula to compute distance.\n\n• Dynamic dispatch: Instantly orders patrol vehicles closest to the target coordinate (e.g. Officer Surjeet located 1.2km away).\n\n• Interactive Route Map: Highlights target coordinates on the CommandCenter dispatch console."
-p_e12b.font.size = Pt(11)
-p_e12b.font.color.rgb = c_text
-p_e12b.line_spacing = 1.1
+add_para_run(tf_e12, "HAVERSINE NEAREST OFFICER ROUTING", 13, c_purple, bold=True, font_name='Arial', is_first=True)
+add_para_run(tf_e12, "• Real-time GPS Tracking: Field officers update their live coordinate pairs back to the dashboard.", 11, c_text, line_spacing=1.1)
+add_para_run(tf_e12, "• Haversine Metric: When an operator verifies a critical block or triple-riding event, the backend runs the Haversine formula to compute distance.", 11, c_text, line_spacing=1.1)
+add_para_run(tf_e12, "• Dynamic dispatch: Instantly orders patrol vehicles closest to the target coordinate (e.g. Officer Surjeet located 1.2km away).", 11, c_text, line_spacing=1.1)
+add_para_run(tf_e12, "• Interactive Route Map: Highlights target coordinates on the CommandCenter dispatch console.", 11, c_text, line_spacing=1.1)
 
 # Routing Flowchart
 flowX = 7.3
@@ -776,27 +629,16 @@ for idx, node in enumerate(flowNodes):
     circle.fill.fore_color.rgb = node['col']
     circle.line.fill.background()
     
-    tx_num = slide12.shapes.add_textbox(Inches(flowX + 0.3), Inches(y + 0.05), Inches(0.6), Inches(0.5))
-    tx_num.text_frame.paragraphs[0].text = str(idx+1)
-    tx_num.text_frame.paragraphs[0].alignment = PP_ALIGN.CENTER
-    tx_num.text_frame.paragraphs[0].font.size = Pt(18)
-    tx_num.text_frame.paragraphs[0].font.bold = True
-    tx_num.text_frame.paragraphs[0].font.color.rgb = RGBColor(0,0,0)
+    tx_num = slide12.shapes.add_textbox(Inches(flowX + 0.3), Inches(y), Inches(0.6), Inches(0.6))
+    tf_num = tx_num.text_frame
+    tf_num.word_wrap = True
+    add_para_run(tf_num, str(idx+1), 18, RGBColor(0,0,0), bold=True, is_first=True).alignment = PP_ALIGN.CENTER
     
     tx_node = slide12.shapes.add_textbox(Inches(flowX + 1.1), Inches(y), Inches(3.8), Inches(0.55))
     tf_node = tx_node.text_frame
     tf_node.word_wrap = True
-    
-    p_nt = tf_node.paragraphs[0]
-    p_nt.text = node['title']
-    p_nt.font.size = Pt(11.5)
-    p_nt.font.bold = True
-    p_nt.font.color.rgb = c_text
-    
-    p_nd = tf_node.add_paragraph()
-    p_nd.text = node['desc']
-    p_nd.font.size = Pt(10.5)
-    p_nd.font.color.rgb = c_textMuted
+    add_para_run(tf_node, node['title'], 11.5, c_text, bold=True, font_name='Arial', is_first=True)
+    add_para_run(tf_node, node['desc'], 10.5, c_textMuted)
 
     if idx < 2:
         conn = slide12.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(flowX + 0.58), Inches(y + 0.6), Inches(0.04), Inches(0.7))
@@ -829,22 +671,9 @@ for idx, t in enumerate(techList):
     tf_t = tx_t.text_frame
     tf_t.word_wrap = True
     
-    p_t = tf_t.paragraphs[0]
-    p_t.text = t['name']
-    p_t.font.size = Pt(12)
-    p_t.font.bold = True
-    p_t.font.color.rgb = t['color']
-    
-    p_list = tf_t.add_paragraph()
-    p_list.text = "Stack: " + t['list']
-    p_list.font.size = Pt(12)
-    p_list.font.bold = True
-    p_list.font.color.rgb = c_text
-    
-    p_spec = tf_t.add_paragraph()
-    p_spec.text = "Usage: " + t['spec']
-    p_spec.font.size = Pt(11)
-    p_spec.font.color.rgb = c_textMuted
+    add_para_run(tf_t, t['name'], 12, t['color'], bold=True, font_name='Arial', is_first=True)
+    add_para_run(tf_t, "Stack: " + t['list'], 12, c_text, bold=True)
+    add_para_run(tf_t, "Usage: " + t['spec'], 11, c_textMuted)
 
 # -----------------------------------------------------------------------------
 # SLIDE 14: Business Impact & ROI
@@ -870,19 +699,8 @@ for idx, imp in enumerate(impacts):
     tf_num = tx_num.text_frame
     tf_num.word_wrap = True
     
-    p_val = tf_num.paragraphs[0]
-    p_val.text = imp['val']
-    p_val.alignment = PP_ALIGN.CENTER
-    p_val.font.size = Pt(48)
-    p_val.font.bold = True
-    p_val.font.color.rgb = imp['color']
-    
-    p_sub = tf_num.add_paragraph()
-    p_sub.text = imp['sub']
-    p_sub.alignment = PP_ALIGN.CENTER
-    p_sub.font.size = Pt(11)
-    p_sub.font.bold = True
-    p_sub.font.color.rgb = c_textMuted
+    add_para_run(tf_num, imp['val'], 48, imp['color'], bold=True, font_name='Arial', is_first=True).alignment = PP_ALIGN.CENTER
+    add_para_run(tf_num, imp['sub'], 11, c_textMuted, bold=True, font_name='Arial').alignment = PP_ALIGN.CENTER
     
     div = slide14.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x + 0.5), Inches(3.8), Inches(2.7), Inches(0.01))
     div.fill.solid()
@@ -893,18 +711,8 @@ for idx, imp in enumerate(impacts):
     tf_desc = tx_desc.text_frame
     tf_desc.word_wrap = True
     
-    p_t = tf_desc.paragraphs[0]
-    p_t.text = imp['t']
-    p_t.alignment = PP_ALIGN.CENTER
-    p_t.font.size = Pt(14)
-    p_t.font.bold = True
-    p_t.font.color.rgb = c_text
-    
-    p_d = tf_desc.add_paragraph()
-    p_d.text = "\n" + imp['d']
-    p_d.font.size = Pt(11.5)
-    p_d.font.color.rgb = c_textMuted
-    p_d.line_spacing = 1.1
+    add_para_run(tf_desc, imp['t'], 14, c_text, bold=True, font_name='Arial', is_first=True).alignment = PP_ALIGN.CENTER
+    add_para_run(tf_desc, "\n" + imp['d'], 11.5, c_textMuted, line_spacing=1.1)
 
 # -----------------------------------------------------------------------------
 # SLIDE 15: Roadmap
@@ -912,9 +720,9 @@ for idx, imp in enumerate(impacts):
 slide15 = createBaseSlide("Future Roadmap & Milestones", "ROADMAP")
 
 tx_rm = slide15.shapes.add_textbox(Inches(0.8), Inches(2.0), Inches(11.0), Inches(0.4))
-tx_rm.text_frame.paragraphs[0].text = "Strategic roadmap for scaling SmartVision X across regional state grids:"
-tx_rm.text_frame.paragraphs[0].font.size = Pt(15)
-tx_rm.text_frame.paragraphs[0].font.color.rgb = c_text
+tf_rm = tx_rm.text_frame
+tf_rm.word_wrap = True
+add_para_run(tf_rm, "Strategic roadmap for scaling SmartVision X across regional state grids:", 15, c_text, is_first=True)
 
 # Horiz Line
 line = slide15.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(4.2), Inches(11.73), Inches(0.04))
@@ -943,17 +751,8 @@ for idx, item in enumerate(roadmap):
     tf_node = tx_node.text_frame
     tf_node.word_wrap = True
     
-    p_date = tf_node.paragraphs[0]
-    p_date.text = item['date']
-    p_date.font.size = Pt(13)
-    p_date.font.bold = True
-    p_date.font.color.rgb = c_cyan
-    
-    p_title = tf_node.add_paragraph()
-    p_title.text = item['title']
-    p_title.font.size = Pt(12)
-    p_title.font.bold = True
-    p_title.font.color.rgb = c_text
+    add_para_run(tf_node, item['date'], 13, c_cyan, bold=True, font_name='Arial', is_first=True)
+    add_para_run(tf_node, item['title'], 12, c_text, bold=True, font_name='Arial')
     
     # Circle node
     circle = slide15.shapes.add_shape(MSO_SHAPE.OVAL, Inches(x + 1.25), Inches(4.08), Inches(0.3), Inches(0.3))
@@ -970,18 +769,12 @@ for idx, item in enumerate(roadmap):
     tx_desc = slide15.shapes.add_textbox(Inches(x), Inches(4.6), Inches(2.8), Inches(1.8))
     tf_desc = tx_desc.text_frame
     tf_desc.word_wrap = True
-    p_desc = tf_desc.paragraphs[0]
-    p_desc.text = item['desc']
-    p_desc.font.size = Pt(11)
-    p_desc.font.color.rgb = c_textMuted
-    p_desc.line_spacing = 1.1
+    add_para_run(tf_desc, item['desc'], 11, c_textMuted, line_spacing=1.1, is_first=True)
 
 tx_thank = slide15.shapes.add_textbox(Inches(0.8), Inches(6.3), Inches(11.73), Inches(0.5))
-tx_thank.text_frame.paragraphs[0].text = "Autonomous Urban Safety Platform — Ready to Scale."
-tx_thank.text_frame.paragraphs[0].alignment = PP_ALIGN.CENTER
-tx_thank.text_frame.paragraphs[0].font.size = Pt(16)
-tx_thank.text_frame.paragraphs[0].font.bold = True
-tx_thank.text_frame.paragraphs[0].font.color.rgb = c_cyan
+tf_thank = tx_thank.text_frame
+tf_thank.word_wrap = True
+add_para_run(tf_thank, "Autonomous Urban Safety Platform — Ready to Scale.", 16, c_cyan, bold=True, is_first=True).alignment = PP_ALIGN.CENTER
 
 # Save
 outputPath = "SmartVision_X_Final_Presentation.pptx"
